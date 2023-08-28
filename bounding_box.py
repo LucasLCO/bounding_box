@@ -1,9 +1,14 @@
-import cv2
 import numpy as np
 import numpy.typing as npt
 from typing import Optional, List, Union, Sequence, Dict
 
-box_type = Union[Sequence[float], npt.NDArray[np.float64]]
+
+class BoundingBox:
+    box_type = Union[Sequence[Union[float, int]], npt.NDArray[Union[np.float64, np.int64]]]
+
+    def __init__(self, bounding_box:box_type) -> None:
+        self.bounding_box = bounding_box 
+
 
 def separate_max_min(box: box_type)->Dict[str, int]:
     """
