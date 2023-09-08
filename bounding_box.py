@@ -7,7 +7,7 @@ class BoundingBox:
     box_type = Union[Sequence[Union[float, int]], npt.NDArray[Union[np.float64, np.int64]]]
 
     def __init__(self, bounding_box:box_type) -> None:
-
+        self.len = len(bounding_box)
         self.bounding_box = self.separate_max_min(bounding_box)
         self.middle = self.find_middle(self.bounding_box)
         self.dimensions = self.find_dimensions(self.bounding_box)
@@ -21,6 +21,9 @@ class BoundingBox:
 
     def __getitem__(self, index):
         return list(self.bounding_box.values())[index]
+    
+    def __len__(self):
+        return self.len
 
     @staticmethod
     def separate_max_min(box: box_type)->Dict[str, int]:
