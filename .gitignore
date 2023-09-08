@@ -2,3 +2,4 @@ test*
 zidane*
 *.pt
 venv
+__pycache__
