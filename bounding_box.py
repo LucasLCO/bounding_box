@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.typing as npt
-from typing import Optional, List, Union, Sequence, Dict
+from typing import Optional, Union, Sequence, Dict
 
 
 class BoundingBox:
@@ -17,7 +17,7 @@ class BoundingBox:
         self.middle = self.find_middle(self.bounding_box)
         self.dimensions = self.find_dimensions(self.bounding_box)
         self.area = self.dimensions["width"] * self.dimensions["height"]
-        
+
     @staticmethod
     def separate_max_min(box: box_type)->Dict[str, int]:
         """
@@ -36,10 +36,10 @@ class BoundingBox:
         """
         
         separeted_box = {}
-        separeted_box["xmin"] = min(box[0], box[2])
-        separeted_box["ymin"] = min(box[1], box[3])
-        separeted_box["xmax"] = max(box[0], box[2])
-        separeted_box["ymax"] = max(box[1], box[3])
+        separeted_box["xmin"] = int(min(box[0], box[2]))
+        separeted_box["ymin"] = int(min(box[1], box[3]))
+        separeted_box["xmax"] = int(max(box[0], box[2]))
+        separeted_box["ymax"] = int(max(box[1], box[3]))
 
         return separeted_box
 
@@ -111,6 +111,7 @@ class BoundingBox:
                 new_car_box: list
                     Car bounding box cuted in half.
             """
+        
         assert n_percetage <= 0, "n_percentage must be bigger than 0."
 
         new_width = self.width * n_percetage
