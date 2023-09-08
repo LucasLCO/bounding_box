@@ -3,9 +3,9 @@ from typing import Optional, Union, Sequence, Dict, Tuple
 class BoundingBox:
     def __init__(self, bounding_box:Sequence[Union[float, int]]) -> None:
         self.len = len(bounding_box)
-        self.init(bounding_box)
+        self.__init(bounding_box)
 
-    def init(self, bounding_box:Sequence[Union[float, int]]) -> None:
+    def __init(self, bounding_box:Sequence[Union[float, int]]) -> None:
         self.bounding_box = self.separate_max_min(bounding_box)
         self.list_bounding_box = tuple(self.bounding_box.values())
         self.middle = self.find_middle(self.bounding_box)
@@ -16,7 +16,7 @@ class BoundingBox:
         self.walls = self.find_walls(self.bounding_box)
 
     def __getitem__(self, index):
-        return tuple(self.bounding_box.values())[index]
+        return self.list_bounding_box[index]
     
     def __len__(self):
         return self.len
@@ -124,7 +124,7 @@ class BoundingBox:
         new_width = self.dimensions["width"] * n_percetage
         new_height = self.dimensions["height"] * n_percetage
 
-        new_bouding_box = [
+        new_bounding_box = [
         int(self.middle["x"] - new_width / 2),
         int(self.middle["y"] - new_height / 2),
         int(self.middle["x"] + new_width / 2),
@@ -132,9 +132,9 @@ class BoundingBox:
     ]
 
         if not inplace:
-            return BoundingBox(new_bouding_box)
+            return BoundingBox(new_bounding_box)
         
-        self.init(new_bouding_box)
+        self.__init(new_bounding_box)
 
     @staticmethod
     def __is_counterclockwise(a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]) -> bool:
@@ -172,3 +172,10 @@ class BoundingBox:
             if intercept:
                 return True
         return False
+    
+    def box_intercept_box(self, bounding_box_2:Dict[str, int]) -> bool:
+        if (self.bounding_box["xmin"] > bounding_box_2["xmax"] or self.bounding_box["xmax"] < bounding_box_2["xmin"] or
+            self.bounding_box["ymin"] > bounding_box_2["ymax"] or self.bounding_box["ymax"] < bounding_box_2["ymin"]):
+
+            return False
+        return True
