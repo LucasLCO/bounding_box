@@ -9,14 +9,20 @@ class BoundingBox:
     def __init__(self, bounding_box:box_type) -> None:
         self.len = len(bounding_box)
         self.bounding_box = self.separate_max_min(bounding_box)
+        self.list_bounding_box = list(self.bounding_box.values())
         self.middle = self.find_middle(self.bounding_box)
+        self.list_middle = list(self.middle.values())
         self.dimensions = self.find_dimensions(self.bounding_box)
+        self.list_dimensions = list(self.dimensions.values())
         self.area = self.dimensions["width"] * self.dimensions["height"]
 
     def reload_init(self, bounding_box:box_type) -> None:
         self.bounding_box = self.separate_max_min(bounding_box)
+        self.list_bounding_box = list(self.bounding_box.values())
         self.middle = self.find_middle(self.bounding_box)
+        self.list_middle = list(self.middle.values())
         self.dimensions = self.find_dimensions(self.bounding_box)
+        self.list_dimensions = list(self.dimensions.values())
         self.area = self.dimensions["width"] * self.dimensions["height"]
 
     def __getitem__(self, index):
