@@ -13,6 +13,7 @@ class BoundingBox:
         self.dimensions = self.find_dimensions(self.bounding_box)
         self.list_dimensions = tuple(self.dimensions.values())
         self.area = self.dimensions["width"] * self.dimensions["height"]
+        self.walls = self.find_walls(self.bounding_box)
 
     def __getitem__(self, index):
         return tuple(self.bounding_box.values())[index]
@@ -74,6 +75,16 @@ class BoundingBox:
         dimensions["height"] = separeted_box["ymax"] - separeted_box["ymin"]
 
         return dimensions
+    
+    @staticmethod
+    def find_walls(separeted_box:Dict[str, int]):
+        walls = {}
+        walls["top"] = (separeted_box["xmin"], separeted_box["ymin"], separeted_box["xmax"], separeted_box["ymin"])
+        walls["bottom"] = (separeted_box["xmin"], separeted_box["ymax"], separeted_box["xmax"], separeted_box["ymax"])
+        walls["left"] = (separeted_box["xmin"], separeted_box["ymin"], separeted_box["xmin"], separeted_box["ymax"])
+        walls["right"] = (separeted_box["xmax"], separeted_box["ymin"], separeted_box["xmax"], separeted_box["ymax"])
+
+        return walls
 
     def iou(self, bounding_box_2):
             x_left = max(self.bounding_box["xmin"], bounding_box_2["xmin"])
