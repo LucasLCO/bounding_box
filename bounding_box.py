@@ -2,7 +2,54 @@ from typing import Optional, Union, Sequence, Dict, Tuple
 
 class BoundingBox:
     def __init__(self, bounding_box:Sequence[Union[float, int]]) -> None:
-        self.len = len(bounding_box)
+        """ Class to simplify bounding boxes usage.
+        
+        It does calculations such as, finding middle, dimensions, intersections to save time and code when working with object detection algorithms.
+
+        Attributes:
+            bounding_box (dict): Dictionary with keys xmin, ymin, xmax, ymax to store bouding box coordinates.
+            list_bounding_box (tuple): Tuple contating xmin, ymin, xmax, ymax respectively.
+            middle (dict): Dictionary with keys x and y store bouding box middle coordinates.
+            list_middle (tuple): Tuple contating middle x and y respectively.
+            dimensions (dict): Dictionary with keys width and height to store bouding dimensions size. 
+            list_dimensions (tuple): Tuple contating widht and height respectively.
+            area (int): bounding box area in pixels.
+            walls (dict): Dictionary with keys top, bottom, left, right to store box walls coordinates in a tuple (x1, y1, x2, y2).
+
+        Methods:
+            separate_max_min(box):
+                Separate a given xyxy box in xmin, ymin, xmax, ymax values in a dict
+             
+            find_middle(separeted_box):
+                Find the middle a box given the separated box and stores it in a dict.
+
+            find_dimensions(separeted_box):
+                Find width and height of a box given the separated box and stores it in a dict.
+
+            find_walls(separeted_box):
+                Find the walls coordinates in x1, y1, x2, y2 given the separated box and stores it in a dict.
+
+            iou(bounding_box_2):
+                Calculates how much of itslef is in bounding_box_2.
+            
+            change_size(n_percetage, inplace):
+                Changes the bounding to n_percentage of its own size and if change it intern values or create anthor object with the new values given inplace.
+
+            box_intercept_line(line):
+                Check if any of box wall is hitting in a given line.
+
+            box_intercept_box(bounding_box_2):
+                Check if box intercept another given bounding_box_2.
+            
+                
+        Example:
+            ```python
+            box = BoundingBox((200, 200, 400, 400))
+            box.walls
+            ```
+        """
+
+        self._len = len(bounding_box)
         self.__init(bounding_box)
 
     def __init(self, bounding_box:Sequence[Union[float, int]]) -> None:
@@ -19,7 +66,7 @@ class BoundingBox:
         return self.list_bounding_box[index]
 
     def __len__(self):
-        return self.len
+        return self._len
 
     @staticmethod
     def separate_max_min(box: Sequence[Union[float, int]])->Dict[str, int]:
