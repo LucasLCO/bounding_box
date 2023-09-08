@@ -3,25 +3,19 @@ from typing import Optional, Union, Sequence, Dict
 class BoundingBox:
     def __init__(self, bounding_box:Sequence[Union[float, int]]) -> None:
         self.len = len(bounding_box)
-        self.bounding_box = self.separate_max_min(bounding_box)
-        self.list_bounding_box = list(self.bounding_box.values())
-        self.middle = self.find_middle(self.bounding_box)
-        self.list_middle = list(self.middle.values())
-        self.dimensions = self.find_dimensions(self.bounding_box)
-        self.list_dimensions = list(self.dimensions.values())
-        self.area = self.dimensions["width"] * self.dimensions["height"]
+        self.init(bounding_box)
 
-    def reload_init(self, bounding_box:Sequence[Union[float, int]], inplace: Optional[bool] = True) -> None:
+    def init(self, bounding_box:Sequence[Union[float, int]]) -> None:
         self.bounding_box = self.separate_max_min(bounding_box)
-        self.list_bounding_box = list(self.bounding_box.values())
+        self.list_bounding_box = tuple(self.bounding_box.values())
         self.middle = self.find_middle(self.bounding_box)
-        self.list_middle = list(self.middle.values())
+        self.list_middle = tuple(self.middle.values())
         self.dimensions = self.find_dimensions(self.bounding_box)
-        self.list_dimensions = list(self.dimensions.values())
+        self.list_dimensions = tuple(self.dimensions.values())
         self.area = self.dimensions["width"] * self.dimensions["height"]
 
     def __getitem__(self, index):
-        return list(self.bounding_box.values())[index]
+        return tuple(self.bounding_box.values())[index]
     
     def __len__(self):
         return self.len
@@ -129,5 +123,4 @@ class BoundingBox:
         if not inplace:
             return BoundingBox(new_bouding_box)
         
-        self.reload_init(new_bouding_box)
-
+        self.init(new_bouding_box)
