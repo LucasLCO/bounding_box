@@ -1,5 +1,4 @@
-test*
-zidane*
 *.pt
 venv
 __pycache__
+__init__
