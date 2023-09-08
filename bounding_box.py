@@ -17,7 +17,7 @@ class BoundingBox:
 
     def __getitem__(self, index):
         return self.list_bounding_box[index]
-    
+
     def __len__(self):
         return self.len
 
@@ -37,7 +37,7 @@ class BoundingBox:
                     dict obtaining x 
         
         """
-        
+
         separeted_box = {}
         separeted_box["xmin"] = int(min(box[0], box[2]))
         separeted_box["ymin"] = int(min(box[1], box[3]))
@@ -149,6 +149,7 @@ class BoundingBox:
         Returns:
             bool: True if the points are in a counterclockwise orientation, False otherwise.
         """
+
         return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
 
     def __do_segments_intersect(self, start_ab: Tuple[int, int], end_ab: Tuple[int, int], start_cd: Tuple[int, int], end_cd: Tuple[int, int]) -> bool:
@@ -164,12 +165,14 @@ class BoundingBox:
         Returns:
             bool: True if the line segments AB and CD intersect, False otherwise.
         """
+
         return self.__is_counterclockwise(start_ab, start_cd, end_cd) != self.__is_counterclockwise(end_ab, start_cd, end_cd) and self.__is_counterclockwise(start_ab, end_ab, start_cd) != self.__is_counterclockwise(start_ab, end_ab, end_cd)
     
     def box_intercept_line(self, line:Tuple[int, int, int, int]) -> bool:
         for wall in self.walls:
             intercept = self.__do_segments_intersect(self.walls[wall][:2], self.walls[wall][2:], line[:2], line[2:])
             if intercept:
+                
                 return True
         return False
     
