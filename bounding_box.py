@@ -11,7 +11,7 @@ class BoundingBox:
         self.list_dimensions = list(self.dimensions.values())
         self.area = self.dimensions["width"] * self.dimensions["height"]
 
-    def reload_init(self, bounding_box:Sequence[Union[float, int]]) -> None:
+    def reload_init(self, bounding_box:Sequence[Union[float, int]], inplace: Optional[bool] = True) -> None:
         self.bounding_box = self.separate_max_min(bounding_box)
         self.list_bounding_box = list(self.bounding_box.values())
         self.middle = self.find_middle(self.bounding_box)
@@ -99,17 +99,14 @@ class BoundingBox:
 
             return iou_percentage
 
-    def change_size(self, n_percetage: Optional[float] = 1) -> None:
+    def change_size(self, n_percetage: Optional[float] = 1, inplace: Optional[bool] = True) -> Union[None, 'BoundingBox']:
         """
-            reduces the parking bounding to n_percentage of its own size.
+            changes the bounding to n_percentage of its own size.
 
             Parameterss
             -----------
-                parking_box: list
-                    parking space bounding box (values stored in coord.json).
-
                 n_percetage: float
-                    percentage in 0-1 scale.
+                    percentage in 0-inf scale.
 
             Output
             ------
@@ -128,5 +125,9 @@ class BoundingBox:
         int(self.middle["x"] + new_width / 2),
         int(self.middle["y"] + new_height / 2),
     ]
+
+        if not inplace:
+            return BoundingBox(new_bouding_box)
         
         self.reload_init(new_bouding_box)
+
