@@ -1,4 +1,4 @@
-from typing import Optional, Union, Sequence, Dict
+from typing import Optional, Union, Sequence, Dict, Tuple
 
 class BoundingBox:
     def __init__(self, bounding_box:Sequence[Union[float, int]]) -> None:
@@ -86,7 +86,7 @@ class BoundingBox:
 
         return walls
 
-    def iou(self, bounding_box_2):
+    def iou(self, bounding_box_2:Dict[str, int]) -> float:
             x_left = max(self.bounding_box["xmin"], bounding_box_2["xmin"])
             y_top = max(self.bounding_box["ymin"], bounding_box_2["ymin"])
             x_right = min(self.bounding_box["xmax"], bounding_box_2["xmax"])
@@ -135,3 +135,40 @@ class BoundingBox:
             return BoundingBox(new_bouding_box)
         
         self.init(new_bouding_box)
+
+    @staticmethod
+    def __is_counterclockwise(a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]) -> bool:
+        """
+        Determines if three points are in a counterclockwise orientation.
+
+        Args:
+            a (Tuple[float, float]): Coordinates of point A (x, y).
+            b (Tuple[float, float]): Coordinates of point B (x, y).
+            c (Tuple[float, float]): Coordinates of point C (x, y).
+
+        Returns:
+            bool: True if the points are in a counterclockwise orientation, False otherwise.
+        """
+        return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
+
+    def __do_segments_intersect(self, start_ab: Tuple[int, int], end_ab: Tuple[int, int], start_cd: Tuple[int, int], end_cd: Tuple[int, int]) -> bool:
+        """
+        Checks if two line segments AB and CD intersect.
+
+        Args:
+            start_ab (Tuple[float, float]): Coordinates of the start point of segment AB (x, y).
+            end_ab (Tuple[float, float]): Coordinates of the end point of segment AB (x, y).
+            start_cd (Tuple[float, float]): Coordinates of the start point of segment CD (x, y).
+            end_cd (Tuple[float, float]): Coordinates of the end point of segment CD (x, y).
+
+        Returns:
+            bool: True if the line segments AB and CD intersect, False otherwise.
+        """
+        return self.__is_counterclockwise(start_ab, start_cd, end_cd) != self.__is_counterclockwise(end_ab, start_cd, end_cd) and self.__is_counterclockwise(start_ab, end_ab, start_cd) != self.__is_counterclockwise(start_ab, end_ab, end_cd)
+    
+    def box_intercept_line(self, line:Tuple[int, int, int, int]) -> bool:
+        for wall in self.walls:
+            intercept = self.__do_segments_intersect(self.walls[wall][:2], self.walls[wall][2:], line[:2], line[2:])
+            if intercept:
+                return True
+        return False
