@@ -1,12 +1,7 @@
-import numpy as np
-import numpy.typing as npt
 from typing import Optional, Union, Sequence, Dict
 
-
 class BoundingBox:
-    box_type = Union[Sequence[Union[float, int]], npt.NDArray[Union[np.float64, np.int64]]]
-
-    def __init__(self, bounding_box:box_type) -> None:
+    def __init__(self, bounding_box:Sequence[Union[float, int]]) -> None:
         self.len = len(bounding_box)
         self.bounding_box = self.separate_max_min(bounding_box)
         self.list_bounding_box = list(self.bounding_box.values())
@@ -16,7 +11,7 @@ class BoundingBox:
         self.list_dimensions = list(self.dimensions.values())
         self.area = self.dimensions["width"] * self.dimensions["height"]
 
-    def reload_init(self, bounding_box:box_type) -> None:
+    def reload_init(self, bounding_box:Sequence[Union[float, int]]) -> None:
         self.bounding_box = self.separate_max_min(bounding_box)
         self.list_bounding_box = list(self.bounding_box.values())
         self.middle = self.find_middle(self.bounding_box)
@@ -32,7 +27,7 @@ class BoundingBox:
         return self.len
 
     @staticmethod
-    def separate_max_min(box: box_type)->Dict[str, int]:
+    def separate_max_min(box: Sequence[Union[float, int]])->Dict[str, int]:
         """
             Separate the box by its maxs and mins (in x, y).
 
@@ -77,7 +72,6 @@ class BoundingBox:
         middle["y"] = int((separeted_box["ymax"] + separeted_box["ymin"]) / 2)
         
         return middle
-
     
     @staticmethod
     def find_dimensions(separeted_box:Dict[str, int]):
@@ -86,7 +80,6 @@ class BoundingBox:
         dimensions["height"] = separeted_box["ymax"] - separeted_box["ymin"]
 
         return dimensions
-    
 
     def iou(self, bounding_box_2):
             x_left = max(self.bounding_box["xmin"], bounding_box_2["xmin"])
@@ -106,8 +99,7 @@ class BoundingBox:
 
             return iou_percentage
 
-
-    def change_size(self, n_percetage: Optional[float] = 0.4) -> None:
+    def change_size(self, n_percetage: Optional[float] = 1) -> None:
         """
             reduces the parking bounding to n_percentage of its own size.
 
@@ -125,10 +117,10 @@ class BoundingBox:
                     Car bounding box cuted in half.
             """
         
-        assert n_percetage <= 0, "n_percentage must be bigger than 0."
+        assert n_percetage > 0, "n_percentage must be bigger than 0."
 
-        new_width = self.width * n_percetage
-        new_height = self.height * n_percetage
+        new_width = self.dimensions["width"] * n_percetage
+        new_height = self.dimensions["height"] * n_percetage
 
         new_bouding_box = [
         int(self.middle["x"] - new_width / 2),
