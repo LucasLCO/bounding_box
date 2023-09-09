@@ -1,5 +1,5 @@
 from typing import Optional, Union, Sequence, Dict, Tuple, List
-
+from box_utils import separate_max_min, find_middle, find_dimensions, find_walls
 
 class BoundingBox:
     """Class to simplify bounding boxes usage.
@@ -17,18 +17,6 @@ class BoundingBox:
         walls (dict): Dictionary with keys top, bottom, left, right to store box walls coordinates in a tuple (x1, y1, x2, y2).
 
     Methods:
-        separate_max_min(box):
-            Separate a given xyxy box in xmin, ymin, xmax, ymax values in a dict
-
-        find_middle(separeted_box):
-            Find the middle a box given the separated box and stores it in a dict.
-
-        find_dimensions(separeted_box):
-            Find width and height of a box given the separated box and stores it in a dict.
-
-        find_walls(separeted_box):
-            Find the walls coordinates in x1, y1, x2, y2 given the separated box and stores it in a dict.
-
         iou(bounding_box_2):
             Calculates how much of itslef is in bounding_box_2.
 
@@ -60,9 +48,9 @@ class BoundingBox:
         """
 
         self._len = len(bounding_box)
-        self.__init(bounding_box)
+        self._init(bounding_box)
 
-    def __init(self, bounding_box: Sequence[Union[float, int]]) -> None:
+    def _init(self, bounding_box: Sequence[Union[float, int]]) -> None:
         """
         Used to update values of the bounding box without another instance.
 
@@ -73,14 +61,16 @@ class BoundingBox:
             None.
         """
 
-        self.bounding_box = self.separate_max_min(bounding_box)
+        self.bounding_box = separate_max_min(bounding_box)
         self.list_bounding_box = tuple(self.bounding_box.values())
-        self.middle = self.find_middle(self.bounding_box)
+        self.middle = find_middle(self.bounding_box)
         self.list_middle = tuple(self.middle.values())
-        self.dimensions = self.find_dimensions(self.bounding_box)
+        self.dimensions = find_dimensions(self.bounding_box)
         self.list_dimensions = tuple(self.dimensions.values())
         self.area = self.dimensions["width"] * self.dimensions["height"]
-        self.walls = self.find_walls(self.bounding_box)
+        self.walls = find_walls(self.bounding_box)
+
+        assert self.area > 0, "Area must be grater than 0"
 
     def __getitem__(self, index) -> Union[List[int], int]:
         """
@@ -108,102 +98,6 @@ class BoundingBox:
 
         return self._len
 
-    @staticmethod
-    def separate_max_min(bounding_box: Sequence[Union[float, int]]) -> Dict[str, int]:
-        """
-        Separate the box by its maxs and mins (in x, y).
-
-        Args:
-            bounding_box (Sequence of int or float): Object detection algorithm return values in xyxy.
-
-        Returns:
-            dict: bounding box xmin, ymin, xmax, ymax values.
-        """
-
-        separeted_box = {}
-        separeted_box["xmin"] = int(min(bounding_box[0], bounding_box[2]))
-        separeted_box["ymin"] = int(min(bounding_box[1], bounding_box[3]))
-        separeted_box["xmax"] = int(max(bounding_box[0], bounding_box[2]))
-        separeted_box["ymax"] = int(max(bounding_box[1], bounding_box[3]))
-
-        return separeted_box
-
-    @staticmethod
-    def find_middle(separeted_box: Dict[str, int]) -> Dict[str, int]:
-        """
-        Find the middle of the bounding box.
-
-        Args:
-            separeted_box (dict): Dictionary with keys xmin, ymin, xmax, ymax to store bouding box coordinates.
-
-        Returns:
-            dict: bounding box middle x and y coordinates values.
-        """
-
-        middle = {}
-        middle["x"] = int((separeted_box["xmax"] + separeted_box["xmin"]) / 2)
-        middle["y"] = int((separeted_box["ymax"] + separeted_box["ymin"]) / 2)
-
-        return middle
-
-    @staticmethod
-    def find_dimensions(separeted_box: Dict[str, int]) -> Dict[str, int]:
-        """
-        Find width and height of the bounding box.
-
-        Args:
-            separeted_box (dict): Dictionary with keys xmin, ymin, xmax, ymax to store bouding box coordinates.
-
-        Returns:
-            dict: bounding box width and height values in pixels.
-        """
-
-        dimensions = {}
-        dimensions["width"] = separeted_box["xmax"] - separeted_box["xmin"]
-        dimensions["height"] = separeted_box["ymax"] - separeted_box["ymin"]
-
-        return dimensions
-
-    @staticmethod
-    def find_walls(separeted_box: Dict[str, int]) -> Dict[str, int]:
-        """
-        Find walls coordinates of the bounding box.
-
-        Args:
-            separeted_box (dict): Dictionary with keys xmin, ymin, xmax, ymax to store bouding box coordinates.
-
-        Returns:
-            dict: bounding box top, bottom, left, right walls coordinates in xyxy.
-        """
-
-        walls = {}
-        walls["top"] = (
-            separeted_box["xmin"],
-            separeted_box["ymin"],
-            separeted_box["xmax"],
-            separeted_box["ymin"],
-        )
-        walls["bottom"] = (
-            separeted_box["xmin"],
-            separeted_box["ymax"],
-            separeted_box["xmax"],
-            separeted_box["ymax"],
-        )
-        walls["left"] = (
-            separeted_box["xmin"],
-            separeted_box["ymin"],
-            separeted_box["xmin"],
-            separeted_box["ymax"],
-        )
-        walls["right"] = (
-            separeted_box["xmax"],
-            separeted_box["ymin"],
-            separeted_box["xmax"],
-            separeted_box["ymax"],
-        )
-
-        return walls
-
     def iou(self, bounding_box_2: Dict[str, int]) -> float:
         """
         Calculates how much of itslef is in bounding_box_2.
@@ -225,10 +119,7 @@ class BoundingBox:
 
         intersection_area = (x_right - x_left) * (y_bottom - y_top)
 
-        try:
-            iou_percentage = intersection_area / float(self.area)
-        except:
-            iou_percentage = 0
+        iou_percentage = intersection_area / float(self.area)
 
         return iou_percentage
 
@@ -261,10 +152,10 @@ class BoundingBox:
         if not inplace:
             return BoundingBox(new_bounding_box)
 
-        self.__init(new_bounding_box)
+        self._init(new_bounding_box)
 
     @staticmethod
-    def __is_counterclockwise(
+    def _is_counterclockwise(
         a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]
     ) -> bool:
         """
@@ -281,7 +172,7 @@ class BoundingBox:
 
         return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
 
-    def __do_segments_intersect(
+    def _do_segments_intersect(
         self,
         start_ab: Tuple[int, int],
         end_ab: Tuple[int, int],
@@ -301,13 +192,13 @@ class BoundingBox:
             bool: True if the line segments AB and CD intersect, False otherwise.
         """
 
-        return self.__is_counterclockwise(
+        return self._is_counterclockwise(
             start_ab, start_cd, end_cd
-        ) != self.__is_counterclockwise(
+        ) != self._is_counterclockwise(
             end_ab, start_cd, end_cd
-        ) and self.__is_counterclockwise(
+        ) and self._is_counterclockwise(
             start_ab, end_ab, start_cd
-        ) != self.__is_counterclockwise(
+        ) != self._is_counterclockwise(
             start_ab, end_ab, end_cd
         )
 
@@ -323,7 +214,7 @@ class BoundingBox:
         """
 
         for wall in self.walls:
-            intercept = self.__do_segments_intersect(
+            intercept = self._do_segments_intersect(
                 self.walls[wall][:2], self.walls[wall][2:], line[:2], line[2:]
             )
             if intercept:
