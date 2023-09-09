@@ -1,8 +1,9 @@
 from typing import Optional, Union, Sequence, Dict, Tuple, List
 
+
 class BoundingBox:
-    """ Class to simplify bounding boxes usage.
-    
+    """Class to simplify bounding boxes usage.
+
     It does calculations such as, finding middle, dimensions, intersections to save time and code when working with object detection algorithms.
 
     Attributes:
@@ -10,7 +11,7 @@ class BoundingBox:
         list_bounding_box (tuple): Tuple contating xmin, ymin, xmax, ymax respectively.
         middle (dict): Dictionary with keys x and y store bouding box middle coordinates.
         list_middle (tuple): Tuple contating middle x and y respectively.
-        dimensions (dict): Dictionary with keys width and height to store bouding dimensions size. 
+        dimensions (dict): Dictionary with keys width and height to store bouding dimensions size.
         list_dimensions (tuple): Tuple contating widht and height respectively.
         area (int): bounding box area in pixels.
         walls (dict): Dictionary with keys top, bottom, left, right to store box walls coordinates in a tuple (x1, y1, x2, y2).
@@ -18,7 +19,7 @@ class BoundingBox:
     Methods:
         separate_max_min(box):
             Separate a given xyxy box in xmin, ymin, xmax, ymax values in a dict
-            
+
         find_middle(separeted_box):
             Find the middle a box given the separated box and stores it in a dict.
 
@@ -30,7 +31,7 @@ class BoundingBox:
 
         iou(bounding_box_2):
             Calculates how much of itslef is in bounding_box_2.
-        
+
         change_size(n_percetage, inplace):
             Changes the bounding to n_percentage of its own size and if change it intern values or create anthor object with the new values given inplace.
 
@@ -39,7 +40,7 @@ class BoundingBox:
 
         box_intercept_box(bounding_box_2):
             Check if box intercept another given bounding_box_2.
-        
+
     Example:
         ```python
         box = BoundingBox((200, 200, 400, 400))
@@ -47,7 +48,7 @@ class BoundingBox:
         ```
     """
 
-    def __init__(self, bounding_box:Sequence[Union[float, int]]) -> None:
+    def __init__(self, bounding_box: Sequence[Union[float, int]]) -> None:
         """
         Initializes a BoundingBox instance.
 
@@ -61,7 +62,7 @@ class BoundingBox:
         self._len = len(bounding_box)
         self.__init(bounding_box)
 
-    def __init(self, bounding_box:Sequence[Union[float, int]]) -> None:
+    def __init(self, bounding_box: Sequence[Union[float, int]]) -> None:
         """
         Used to update values of the bounding box without another instance.
 
@@ -128,7 +129,7 @@ class BoundingBox:
         return separeted_box
 
     @staticmethod
-    def find_middle(separeted_box:Dict[str, int]) -> Dict[str, int]:
+    def find_middle(separeted_box: Dict[str, int]) -> Dict[str, int]:
         """
         Find the middle of the bounding box.
 
@@ -146,7 +147,7 @@ class BoundingBox:
         return middle
 
     @staticmethod
-    def find_dimensions(separeted_box:Dict[str, int]) -> Dict[str, int]:
+    def find_dimensions(separeted_box: Dict[str, int]) -> Dict[str, int]:
         """
         Find width and height of the bounding box.
 
@@ -162,9 +163,9 @@ class BoundingBox:
         dimensions["height"] = separeted_box["ymax"] - separeted_box["ymin"]
 
         return dimensions
-    
+
     @staticmethod
-    def find_walls(separeted_box:Dict[str, int]) -> Dict[str, int]:
+    def find_walls(separeted_box: Dict[str, int]) -> Dict[str, int]:
         """
         Find walls coordinates of the bounding box.
 
@@ -176,14 +177,34 @@ class BoundingBox:
         """
 
         walls = {}
-        walls["top"] = (separeted_box["xmin"], separeted_box["ymin"], separeted_box["xmax"], separeted_box["ymin"])
-        walls["bottom"] = (separeted_box["xmin"], separeted_box["ymax"], separeted_box["xmax"], separeted_box["ymax"])
-        walls["left"] = (separeted_box["xmin"], separeted_box["ymin"], separeted_box["xmin"], separeted_box["ymax"])
-        walls["right"] = (separeted_box["xmax"], separeted_box["ymin"], separeted_box["xmax"], separeted_box["ymax"])
+        walls["top"] = (
+            separeted_box["xmin"],
+            separeted_box["ymin"],
+            separeted_box["xmax"],
+            separeted_box["ymin"],
+        )
+        walls["bottom"] = (
+            separeted_box["xmin"],
+            separeted_box["ymax"],
+            separeted_box["xmax"],
+            separeted_box["ymax"],
+        )
+        walls["left"] = (
+            separeted_box["xmin"],
+            separeted_box["ymin"],
+            separeted_box["xmin"],
+            separeted_box["ymax"],
+        )
+        walls["right"] = (
+            separeted_box["xmax"],
+            separeted_box["ymin"],
+            separeted_box["xmax"],
+            separeted_box["ymax"],
+        )
 
         return walls
 
-    def iou(self, bounding_box_2:Dict[str, int]) -> float:
+    def iou(self, bounding_box_2: Dict[str, int]) -> float:
         """
         Calculates how much of itslef is in bounding_box_2.
 
@@ -211,7 +232,9 @@ class BoundingBox:
 
         return iou_percentage
 
-    def change_size(self, n_percetage: Optional[float] = 1, inplace: Optional[bool] = True) -> Union[None, 'BoundingBox']:
+    def change_size(
+        self, n_percetage: Optional[float] = 1, inplace: Optional[bool] = True
+    ) -> Union[None, "BoundingBox"]:
         """
         Change the bounding to n_percentage of its own size.
 
@@ -220,7 +243,7 @@ class BoundingBox:
             inplace (bool): If it is going to change this instace values or create another instance.
 
         Returns:
-            None if inplace otherwise new instance of BoundingBox with changed values. 
+            None if inplace otherwise new instance of BoundingBox with changed values.
         """
 
         assert n_percetage > 0, "n_percentage must be bigger than 0."
@@ -229,11 +252,11 @@ class BoundingBox:
         new_height = self.dimensions["height"] * n_percetage
 
         new_bounding_box = [
-        int(self.middle["x"] - new_width / 2),
-        int(self.middle["y"] - new_height / 2),
-        int(self.middle["x"] + new_width / 2),
-        int(self.middle["y"] + new_height / 2),
-    ]
+            int(self.middle["x"] - new_width / 2),
+            int(self.middle["y"] - new_height / 2),
+            int(self.middle["x"] + new_width / 2),
+            int(self.middle["y"] + new_height / 2),
+        ]
 
         if not inplace:
             return BoundingBox(new_bounding_box)
@@ -241,7 +264,9 @@ class BoundingBox:
         self.__init(new_bounding_box)
 
     @staticmethod
-    def __is_counterclockwise(a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]) -> bool:
+    def __is_counterclockwise(
+        a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]
+    ) -> bool:
         """
         Determines if three points are in a counterclockwise orientation.
 
@@ -256,7 +281,13 @@ class BoundingBox:
 
         return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
 
-    def __do_segments_intersect(self, start_ab: Tuple[int, int], end_ab: Tuple[int, int], start_cd: Tuple[int, int], end_cd: Tuple[int, int]) -> bool:
+    def __do_segments_intersect(
+        self,
+        start_ab: Tuple[int, int],
+        end_ab: Tuple[int, int],
+        start_cd: Tuple[int, int],
+        end_cd: Tuple[int, int],
+    ) -> bool:
         """
         Checks if two line segments AB and CD intersect.
 
@@ -270,9 +301,17 @@ class BoundingBox:
             bool: True if the line segments AB and CD intersect, False otherwise.
         """
 
-        return self.__is_counterclockwise(start_ab, start_cd, end_cd) != self.__is_counterclockwise(end_ab, start_cd, end_cd) and self.__is_counterclockwise(start_ab, end_ab, start_cd) != self.__is_counterclockwise(start_ab, end_ab, end_cd)
-    
-    def box_intercept_line(self, line:Tuple[int, int, int, int]) -> bool:
+        return self.__is_counterclockwise(
+            start_ab, start_cd, end_cd
+        ) != self.__is_counterclockwise(
+            end_ab, start_cd, end_cd
+        ) and self.__is_counterclockwise(
+            start_ab, end_ab, start_cd
+        ) != self.__is_counterclockwise(
+            start_ab, end_ab, end_cd
+        )
+
+    def box_intercept_line(self, line: Tuple[int, int, int, int]) -> bool:
         """
         Check if any of box wall is hitting in a given line.
 
@@ -284,13 +323,14 @@ class BoundingBox:
         """
 
         for wall in self.walls:
-            intercept = self.__do_segments_intersect(self.walls[wall][:2], self.walls[wall][2:], line[:2], line[2:])
+            intercept = self.__do_segments_intersect(
+                self.walls[wall][:2], self.walls[wall][2:], line[:2], line[2:]
+            )
             if intercept:
-                
                 return True
         return False
-    
-    def box_intercept_box(self, bounding_box_2:Dict[str, int]) -> bool:
+
+    def box_intercept_box(self, bounding_box_2: Dict[str, int]) -> bool:
         """
         Check if box intercept another given bounding_box_2.
 
@@ -301,8 +341,11 @@ class BoundingBox:
             bool: True if the box and bounding_box_2 intersect, False otherwise.
         """
 
-        if (self.bounding_box["xmin"] > bounding_box_2["xmax"] or self.bounding_box["xmax"] < bounding_box_2["xmin"] or
-            self.bounding_box["ymin"] > bounding_box_2["ymax"] or self.bounding_box["ymax"] < bounding_box_2["ymin"]):
-
+        if (
+            self.bounding_box["xmin"] > bounding_box_2["xmax"]
+            or self.bounding_box["xmax"] < bounding_box_2["xmin"]
+            or self.bounding_box["ymin"] > bounding_box_2["ymax"]
+            or self.bounding_box["ymax"] < bounding_box_2["ymin"]
+        ):
             return False
         return True
