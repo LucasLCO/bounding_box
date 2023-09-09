@@ -1,5 +1,5 @@
 import unittest
-from box_utils import separate_max_min
+from bounding_box.box_utils import separate_max_min
 
 class TestBox(unittest.TestCase):
     def test_separate_max_min(self):
