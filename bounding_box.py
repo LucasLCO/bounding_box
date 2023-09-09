@@ -81,7 +81,7 @@ class BoundingBox:
         self.area = self.dimensions["width"] * self.dimensions["height"]
         self.walls = self.find_walls(self.bounding_box)
 
-    def __getitem__(self, index) -> Union(List[int], int):
+    def __getitem__(self, index) -> Union[List[int], int]:
         """
         Returns bounding box xyxy value at position index.
 
