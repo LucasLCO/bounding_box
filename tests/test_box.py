@@ -1,4 +1,6 @@
 import unittest
+import sys
+sys.path.append("./")
 from bounding_box.box import BoundingBox
 
 class TestBoundingBox(unittest.TestCase):

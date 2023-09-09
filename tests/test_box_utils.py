@@ -1,5 +1,7 @@
 import unittest
-from bounding_box.box_utils import separate_max_min
+import sys
+sys.path.append("./")
+from bounding_box.utils.box_utils import separate_max_min
 
 class TestBox(unittest.TestCase):
     def test_separate_max_min(self):

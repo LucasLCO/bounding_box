@@ -1,8 +1,9 @@
 from typing import Optional, Union, Sequence, Dict, Tuple, List
-from box_utils import separate_max_min, find_middle, find_dimensions, find_walls
+from .utils.box_utils import separate_max_min, find_middle, find_dimensions, find_walls
 
 class BoundingBox:
-    """Class to simplify bounding boxes usage.
+    """
+    Class to simplify bounding boxes usage.
 
     It does calculations such as, finding middle, dimensions, intersections to save time and code when working with object detection algorithms.
 
