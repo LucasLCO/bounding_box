@@ -4,7 +4,7 @@ A Python package designed to simplify bounding box operations for object detecti
 
 ## Example
 
-```
+```python
 from bounding_box import BoundingBox
 import numpy as np
 import cv2
