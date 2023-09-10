@@ -129,7 +129,7 @@ class BoundingBox:
         self, n_percetage: Optional[float] = 1, inplace: Optional[bool] = True
     ) -> Union[None, "BoundingBox"]:
         """
-        Change the bounding to n_percentage of its own size.
+        Change the bounding box size to n_percentage of its own size.
 
         Args:
             n_percetage (float): Percentage to be calculated.
@@ -248,6 +248,17 @@ class BoundingBox:
         percentages: Optional[Tuple[float, float, float, float]] = (1, 1, 1, 1),
         inplace: Optional[bool] = True,
     ) -> Union[None, "BoundingBox"]:
+        """
+        Change the bounding box xmin, ymin, xmax, ymax to the percentile on percentages based on its dimensions.
+
+        Args:
+            percentages (tuple): Percentages to be calculated.
+            inplace (bool): If it is going to change this instace values or create another instance.
+
+        Returns:
+            None if inplace otherwise new instance of BoundingBox with changed values.
+        """
+        
         new_bounding_box = [
             int(self.middle["x"] - (self.dimensions["width"] / 2 * percentages[0])),
             int(self.middle["y"] - (self.dimensions["height"] / 2 * percentages[1])),
