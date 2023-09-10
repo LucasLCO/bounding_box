@@ -1,6 +1,7 @@
 from typing import Optional, Union, Sequence, Dict, Tuple, List
 from .utils.box_utils import separate_max_min, find_middle, find_dimensions, find_walls
 
+
 class BoundingBox:
     """
     Class to simplify bounding boxes usage.
@@ -242,12 +243,15 @@ class BoundingBox:
             return False
         return True
 
-    def precise_change_size(self, percentages:Optional[Tuple[float,float,float,float]]=(1,1,1,1), inplace: Optional[bool] = True) -> Union[None, "BoundingBox"]:
-
+    def precise_change_size(
+        self,
+        percentages: Optional[Tuple[float, float, float, float]] = (1, 1, 1, 1),
+        inplace: Optional[bool] = True,
+    ) -> Union[None, "BoundingBox"]:
         new_bounding_box = [
-            int(self.middle["x"] - (self.dimensions["width"] / 2 * percentages[0])), 
+            int(self.middle["x"] - (self.dimensions["width"] / 2 * percentages[0])),
             int(self.middle["y"] - (self.dimensions["height"] / 2 * percentages[1])),
-            int(self.middle["x"] + (self.dimensions["width"] / 2 * percentages[2])), 
+            int(self.middle["x"] + (self.dimensions["width"] / 2 * percentages[2])),
             int(self.middle["y"] + (self.dimensions["height"] / 2 * percentages[3])),
         ]
 
