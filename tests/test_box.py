@@ -1,7 +1,7 @@
 import unittest
 import sys
 sys.path.append("./")
-from bounding_box.box import BoundingBox
+from easy_bounding_box.box import BoundingBox
 
 class TestBoundingBox(unittest.TestCase):
     def test_iou(self):
