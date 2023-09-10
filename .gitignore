@@ -54,4 +54,6 @@ Thumbs.db
 # Ignore local configuration if it exists
 config.local.ini
 
-tuto*
+tuto.ipynb
+
+*.jpg
