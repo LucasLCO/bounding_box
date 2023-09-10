@@ -40,7 +40,6 @@ def find_middle(separeted_box: Dict[str, int]) -> Dict[str, int]:
 
     return middle
 
-
 def find_dimensions(separeted_box: Dict[str, int]) -> Dict[str, int]:
     """
     Find width and height of the bounding box.
