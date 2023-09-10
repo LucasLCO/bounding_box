@@ -2,10 +2,15 @@
 
 A Python package designed to simplify bounding box operations for object detection. It provides functions to calculate box centers, dimensions, and intersections, reducing the complexity of these tasks in your code. With Bounding_Box, you can streamline your object detection workflow, making it more efficient and straightforward.
 
+## Installation
+```
+pip install easy-bounding-box
+```
+
 ## Example
 
 ```python
-from bounding_box import BoundingBox
+from easy_bounding_box import BoundingBox
 import numpy as np
 import cv2
 
