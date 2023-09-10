@@ -241,3 +241,17 @@ class BoundingBox:
         ):
             return False
         return True
+
+    def precise_change_size(self, percentages:Optional[Tuple[float,float,float,float]]=(1,1,1,1), inplace: Optional[bool] = True) -> Union[None, "BoundingBox"]:
+
+        new_bounding_box = [
+            int(self.middle["x"] - (self.dimensions["width"] / 2 * percentages[0])), 
+            int(self.middle["y"] - (self.dimensions["height"] / 2 * percentages[1])),
+            int(self.middle["x"] + (self.dimensions["width"] / 2 * percentages[2])), 
+            int(self.middle["y"] + (self.dimensions["height"] / 2 * percentages[3])),
+        ]
+
+        if not inplace:
+            return BoundingBox(new_bounding_box)
+
+        self._init(new_bounding_box)
