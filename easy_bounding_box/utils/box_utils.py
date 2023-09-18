@@ -1,4 +1,4 @@
-from typing import Union, Sequence, Dict
+from typing import Union, Sequence, Dict, Tuple
 
 
 def separate_max_min(bounding_box: Sequence[Union[float, int]]) -> Dict[str, int]:
@@ -103,3 +103,20 @@ def find_walls(separeted_box: Dict[str, int]) -> Dict[str, int]:
     )
 
     return walls
+
+def is_counterclockwise(
+        self, a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]
+    ) -> bool:
+        """
+        Determines if three points are in a counterclockwise orientation.
+
+        Args:
+            a (Tuple[float, float]): Coordinates of point A (x, y).
+            b (Tuple[float, float]): Coordinates of point B (x, y).
+            c (Tuple[float, float]): Coordinates of point C (x, y).
+
+        Returns:
+            bool: True if the points are in a counterclockwise orientation, False otherwise.
+        """
+
+        return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])

@@ -1,5 +1,5 @@
 from typing import Optional, Union, Sequence, Dict, Tuple, List
-from .utils.box_utils import separate_max_min, find_middle, find_dimensions, find_walls
+from .utils.box_utils import separate_max_min, find_middle, find_dimensions, find_walls, is_counterclockwise
 
 
 class BoundingBox:
@@ -50,9 +50,9 @@ class BoundingBox:
         """
 
         self._len = len(bounding_box)
-        self._init(bounding_box)
+        self._update(bounding_box)
 
-    def _init(self, bounding_box: Sequence[Union[float, int]]) -> None:
+    def _update(self, bounding_box: Sequence[Union[float, int]]) -> None:
         """
         Used to update values of the bounding box without another instance.
 
@@ -154,25 +154,7 @@ class BoundingBox:
         if not inplace:
             return BoundingBox(new_bounding_box)
 
-        self._init(new_bounding_box)
-
-    @staticmethod
-    def _is_counterclockwise(
-        a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]
-    ) -> bool:
-        """
-        Determines if three points are in a counterclockwise orientation.
-
-        Args:
-            a (Tuple[float, float]): Coordinates of point A (x, y).
-            b (Tuple[float, float]): Coordinates of point B (x, y).
-            c (Tuple[float, float]): Coordinates of point C (x, y).
-
-        Returns:
-            bool: True if the points are in a counterclockwise orientation, False otherwise.
-        """
-
-        return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
+        self._update(new_bounding_box)
 
     def _do_segments_intersect(
         self,
@@ -194,13 +176,13 @@ class BoundingBox:
             bool: True if the line segments AB and CD intersect, False otherwise.
         """
 
-        return self._is_counterclockwise(
+        return is_counterclockwise(
             start_ab, start_cd, end_cd
-        ) != self._is_counterclockwise(
+        ) != is_counterclockwise(
             end_ab, start_cd, end_cd
-        ) and self._is_counterclockwise(
+        ) and is_counterclockwise(
             start_ab, end_ab, start_cd
-        ) != self._is_counterclockwise(
+        ) != is_counterclockwise(
             start_ab, end_ab, end_cd
         )
 
@@ -259,14 +241,19 @@ class BoundingBox:
             None if inplace otherwise new instance of BoundingBox with changed values.
         """
         
-        new_bounding_box = [
-            int(self.middle["x"] - (self.dimensions["width"] / 2 * percentages[0])),
-            int(self.middle["y"] - (self.dimensions["height"] / 2 * percentages[1])),
-            int(self.middle["x"] + (self.dimensions["width"] / 2 * percentages[2])),
-            int(self.middle["y"] + (self.dimensions["height"] / 2 * percentages[3])),
-        ]
+        x_min = percentages[0] * 2 - 1 
+        y_min = percentages[1] * 2 - 1
+        x_max = percentages[2] * 2 - 1
+        y_max = percentages[3] * 2 - 1
 
+
+        new_bounding_box = [
+            int(self.middle["x"] - (self.dimensions["width"] / 2 *  x_min)),
+            int(self.middle["y"] - (self.dimensions["height"] / 2 * y_min)),
+            int(self.middle["x"] + (self.dimensions["width"] / 2 *  x_max)),
+            int(self.middle["y"] + (self.dimensions["height"] / 2 * y_max))
+        ]
         if not inplace:
             return BoundingBox(new_bounding_box)
 
-        self._init(new_bounding_box)
+        self._update(new_bounding_box)
