@@ -109,7 +109,7 @@ class BoundingBox:
         {self.walls}
         """
 
-    def iou(self, bounding_box_2: Dict[str, int]) -> float:
+    def iou(self, bounding_box_2: "BoundingBox") -> float:
         """
         Calculates how much of itslef is in bounding_box_2.
 
@@ -120,10 +120,10 @@ class BoundingBox:
             float: Percentage value of iou.
         """
 
-        x_left = max(self.dict_bounding_box["xmin"], bounding_box_2["xmin"])
-        y_top = max(self.dict_bounding_box["ymin"], bounding_box_2["ymin"])
-        x_right = min(self.dict_bounding_box["xmax"], bounding_box_2["xmax"])
-        y_bottom = min(self.dict_bounding_box["ymax"], bounding_box_2["ymax"])
+        x_left = max(self.dict_bounding_box["xmin"], bounding_box_2.dict_bounding_box["xmin"])
+        y_top = max(self.dict_bounding_box["ymin"], bounding_box_2.dict_bounding_box["ymin"])
+        x_right = min(self.dict_bounding_box["xmax"], bounding_box_2.dict_bounding_box["xmax"])
+        y_bottom = min(self.dict_bounding_box["ymax"], bounding_box_2.dict_bounding_box["ymax"])
 
         if x_right < x_left or y_bottom < y_top:
             return 0
@@ -186,7 +186,7 @@ class BoundingBox:
                 return True
         return False
 
-    def box_intercept_box(self, bounding_box_2: Dict[str, int]) -> bool:
+    def box_intercept_box(self, bounding_box_2: "BoundingBox") -> bool:
         """
         Check if box intercept another given bounding_box_2.
 
@@ -198,10 +198,10 @@ class BoundingBox:
         """
 
         if (
-            self.dict_bounding_box["xmin"] > bounding_box_2["xmax"]
-            or self.dict_bounding_box["xmax"] < bounding_box_2["xmin"]
-            or self.dict_bounding_box["ymin"] > bounding_box_2["ymax"]
-            or self.dict_bounding_box["ymax"] < bounding_box_2["ymin"]
+            self.dict_bounding_box["xmin"] > bounding_box_2.dict_bounding_box["xmax"]
+            or self.dict_bounding_box["xmax"] < bounding_box_2.dict_bounding_box["xmin"]
+            or self.dict_bounding_box["ymin"] > bounding_box_2.dict_bounding_box["ymax"]
+            or self.dict_bounding_box["ymax"] < bounding_box_2.dict_bounding_box["ymin"]
         ):
             return False
         return True
