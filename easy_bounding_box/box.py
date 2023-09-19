@@ -1,5 +1,5 @@
 from typing import Optional, Union, Sequence, Dict, Tuple, List
-from .utils.box_utils import separate_max_min, find_middle, find_dimensions, find_walls, is_counterclockwise
+from .utils.box_utils import separate_box, find_middle, find_dimensions, find_walls, is_counterclockwise
 
 
 class BoundingBox:
@@ -51,6 +51,7 @@ class BoundingBox:
 
         self._len = len(bounding_box)
         self._update(bounding_box)
+        self.class_ = bounding_box
 
     def _update(self, bounding_box: Sequence[Union[float, int]]) -> None:
         """
@@ -63,7 +64,7 @@ class BoundingBox:
             None.
         """
 
-        self.dict_bounding_box = separate_max_min(bounding_box)
+        self.dict_bounding_box = separate_box(bounding_box)
         self.list_bounding_box = tuple(self.dict_bounding_box.values())
         self.dict_middle = find_middle(self.dict_bounding_box)
         self.list_middle = tuple(self.dict_middle.values())
