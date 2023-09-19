@@ -63,14 +63,14 @@ class BoundingBox:
             None.
         """
 
-        self.bounding_box = separate_max_min(bounding_box)
-        self.list_bounding_box = tuple(self.bounding_box.values())
-        self.middle = find_middle(self.bounding_box)
-        self.list_middle = tuple(self.middle.values())
-        self.dimensions = find_dimensions(self.bounding_box)
-        self.list_dimensions = tuple(self.dimensions.values())
-        self.area = self.dimensions["width"] * self.dimensions["height"]
-        self.walls = find_walls(self.bounding_box)
+        self.dict_bounding_box = separate_max_min(bounding_box)
+        self.list_bounding_box = tuple(self.dict_bounding_box.values())
+        self.dict_middle = find_middle(self.dict_bounding_box)
+        self.list_middle = tuple(self.dict_middle.values())
+        self.dict_dimensions = find_dimensions(self.dict_bounding_box)
+        self.list_dimensions = tuple(self.dict_dimensions.values())
+        self.area = self.dict_dimensions["width"] * self.dict_dimensions["height"]
+        self.walls = find_walls(self.dict_bounding_box)
 
         assert self.area > 0, "Area must be grater than 0"
 
@@ -102,9 +102,9 @@ class BoundingBox:
     
     def __str__(self) -> str:
         return f""""
-        {self.bounding_box}
-        {self.middle}
-        {self.dimensions}
+        {self.dict_bounding_box}
+        {self.dict_middle}
+        {self.dict_dimensions}
         {self.walls}
         """
 
@@ -119,10 +119,10 @@ class BoundingBox:
             float: Percentage value of iou.
         """
 
-        x_left = max(self.bounding_box["xmin"], bounding_box_2["xmin"])
-        y_top = max(self.bounding_box["ymin"], bounding_box_2["ymin"])
-        x_right = min(self.bounding_box["xmax"], bounding_box_2["xmax"])
-        y_bottom = min(self.bounding_box["ymax"], bounding_box_2["ymax"])
+        x_left = max(self.dict_bounding_box["xmin"], bounding_box_2["xmin"])
+        y_top = max(self.dict_bounding_box["ymin"], bounding_box_2["ymin"])
+        x_right = min(self.dict_bounding_box["xmax"], bounding_box_2["xmax"])
+        y_bottom = min(self.dict_bounding_box["ymax"], bounding_box_2["ymax"])
 
         if x_right < x_left or y_bottom < y_top:
             return 0
@@ -149,14 +149,14 @@ class BoundingBox:
 
         assert n_percetage > 0, "n_percentage must be bigger than 0."
 
-        new_width = self.dimensions["width"] * n_percetage
-        new_height = self.dimensions["height"] * n_percetage
+        new_width = self.dict_dimensions["width"] * n_percetage
+        new_height = self.dict_dimensions["height"] * n_percetage
 
         new_bounding_box = [
-            int(self.middle["x"] - new_width / 2),
-            int(self.middle["y"] - new_height / 2),
-            int(self.middle["x"] + new_width / 2),
-            int(self.middle["y"] + new_height / 2),
+            int(self.dict_middle["x"] - new_width / 2),
+            int(self.dict_middle["y"] - new_height / 2),
+            int(self.dict_middle["x"] + new_width / 2),
+            int(self.dict_middle["y"] + new_height / 2),
         ]
 
         if not inplace:
@@ -225,10 +225,10 @@ class BoundingBox:
         """
 
         if (
-            self.bounding_box["xmin"] > bounding_box_2["xmax"]
-            or self.bounding_box["xmax"] < bounding_box_2["xmin"]
-            or self.bounding_box["ymin"] > bounding_box_2["ymax"]
-            or self.bounding_box["ymax"] < bounding_box_2["ymin"]
+            self.dict_bounding_box["xmin"] > bounding_box_2["xmax"]
+            or self.dict_bounding_box["xmax"] < bounding_box_2["xmin"]
+            or self.dict_bounding_box["ymin"] > bounding_box_2["ymax"]
+            or self.dict_bounding_box["ymax"] < bounding_box_2["ymin"]
         ):
             return False
         return True
@@ -256,10 +256,10 @@ class BoundingBox:
 
 
         new_bounding_box = [
-            int(self.middle["x"] - (self.dimensions["width"] / 2 *  x_min)),
-            int(self.middle["y"] - (self.dimensions["height"] / 2 * y_min)),
-            int(self.middle["x"] + (self.dimensions["width"] / 2 *  x_max)),
-            int(self.middle["y"] + (self.dimensions["height"] / 2 * y_max))
+            int(self.dict_middle["x"] - (self.dict_dimensions["width"] / 2 *  x_min)),
+            int(self.dict_middle["y"] - (self.dict_dimensions["height"] / 2 * y_min)),
+            int(self.dict_middle["x"] + (self.dict_dimensions["width"] / 2 *  x_max)),
+            int(self.dict_middle["y"] + (self.dict_dimensions["height"] / 2 * y_max))
         ]
         if not inplace:
             return BoundingBox(new_bounding_box)
