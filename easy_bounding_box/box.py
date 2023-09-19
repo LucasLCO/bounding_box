@@ -51,7 +51,7 @@ class BoundingBox:
 
         self._len = len(bounding_box)
         self._update(bounding_box)
-        self.class_ = bounding_box
+        self.class_ = bounding_box[4]
 
     def _update(self, bounding_box: Sequence[Union[float, int]]) -> None:
         """
