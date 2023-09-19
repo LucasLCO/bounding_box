@@ -122,6 +122,35 @@ def is_counterclockwise(
 
         return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
 
+def do_segments_intersect(
+        self,
+        start_ab: Tuple[int, int],
+        end_ab: Tuple[int, int],
+        start_cd: Tuple[int, int],
+        end_cd: Tuple[int, int],
+    ) -> bool:
+        """
+        Checks if two line segments AB and CD intersect.
+
+        Args:
+            start_ab (Tuple[float, float]): Coordinates of the start point of segment AB (x, y).
+            end_ab (Tuple[float, float]): Coordinates of the end point of segment AB (x, y).
+            start_cd (Tuple[float, float]): Coordinates of the start point of segment CD (x, y).
+            end_cd (Tuple[float, float]): Coordinates of the end point of segment CD (x, y).
+
+        Returns:
+            bool: True if the line segments AB and CD intersect, False otherwise.
+        """
+
+        return is_counterclockwise(
+            start_ab, start_cd, end_cd
+        ) != is_counterclockwise(
+            end_ab, start_cd, end_cd
+        ) and is_counterclockwise(
+            start_ab, end_ab, start_cd
+        ) != is_counterclockwise(
+            start_ab, end_ab, end_cd
+        )
 
 def separate_classes(dict_boxes):
     classes = {cls for cls in set(dict_boxes[::].dict_bouding_box["class"])}

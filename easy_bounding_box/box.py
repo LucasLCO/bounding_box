@@ -1,5 +1,5 @@
 from typing import Optional, Union, Sequence, Dict, Tuple, List
-from .utils.box_utils import separate_box, find_middle, find_dimensions, find_walls, is_counterclockwise
+from .utils.box_utils import separate_box, find_middle, find_dimensions, find_walls, do_segments_intersect
 
 
 class BoundingBox:
@@ -165,35 +165,6 @@ class BoundingBox:
 
         self._update(new_bounding_box)
 
-    def _do_segments_intersect(
-        self,
-        start_ab: Tuple[int, int],
-        end_ab: Tuple[int, int],
-        start_cd: Tuple[int, int],
-        end_cd: Tuple[int, int],
-    ) -> bool:
-        """
-        Checks if two line segments AB and CD intersect.
-
-        Args:
-            start_ab (Tuple[float, float]): Coordinates of the start point of segment AB (x, y).
-            end_ab (Tuple[float, float]): Coordinates of the end point of segment AB (x, y).
-            start_cd (Tuple[float, float]): Coordinates of the start point of segment CD (x, y).
-            end_cd (Tuple[float, float]): Coordinates of the end point of segment CD (x, y).
-
-        Returns:
-            bool: True if the line segments AB and CD intersect, False otherwise.
-        """
-
-        return is_counterclockwise(
-            start_ab, start_cd, end_cd
-        ) != is_counterclockwise(
-            end_ab, start_cd, end_cd
-        ) and is_counterclockwise(
-            start_ab, end_ab, start_cd
-        ) != is_counterclockwise(
-            start_ab, end_ab, end_cd
-        )
 
     def box_intercept_line(self, line: Tuple[int, int, int, int]) -> bool:
         """
@@ -207,7 +178,7 @@ class BoundingBox:
         """
 
         for wall in self.walls:
-            intercept = self._do_segments_intersect(
+            intercept = do_segments_intersect(
                 self.walls[wall][:2], self.walls[wall][2:], line[:2], line[2:]
             )
             if intercept:
