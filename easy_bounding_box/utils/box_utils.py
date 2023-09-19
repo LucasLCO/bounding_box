@@ -1,7 +1,7 @@
 from typing import Union, Sequence, Dict, Tuple
 
 
-def separate_max_min(bounding_box: Sequence[Union[float, int]]) -> Dict[str, int]:
+def separate_box(bounding_box: Sequence[Union[float, int]]) -> Dict[str, int]:
     """
     Separate the box by its maxs and mins (in x, y).
 
@@ -21,6 +21,7 @@ def separate_max_min(bounding_box: Sequence[Union[float, int]]) -> Dict[str, int
     separeted_box["ymin"] = int(min(bounding_box[1], bounding_box[3]))
     separeted_box["xmax"] = int(max(bounding_box[0], bounding_box[2]))
     separeted_box["ymax"] = int(max(bounding_box[1], bounding_box[3]))
+    separeted_box["class"] = int(bounding_box[4])
 
     assert set(separeted_box.values()) != {
         0
@@ -120,3 +121,7 @@ def is_counterclockwise(
         """
 
         return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
+
+
+def separate_classes(dict_boxes):
+    classes = {cls for cls in set(dict_boxes[::].dict_bouding_box["class"])}
