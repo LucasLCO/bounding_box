@@ -106,7 +106,7 @@ def find_walls(separeted_box: Dict[str, int]) -> Dict[str, int]:
     return walls
 
 def is_counterclockwise(
-        self, a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]
+        a: Tuple[int, int], b: Tuple[int, int], c: Tuple[int, int]
     ) -> bool:
         """
         Determines if three points are in a counterclockwise orientation.
@@ -123,7 +123,6 @@ def is_counterclockwise(
         return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
 
 def do_segments_intersect(
-        self,
         start_ab: Tuple[int, int],
         end_ab: Tuple[int, int],
         start_cd: Tuple[int, int],

@@ -158,6 +158,7 @@ class BoundingBox:
             int(self.dict_middle["y"] - new_height / 2),
             int(self.dict_middle["x"] + new_width / 2),
             int(self.dict_middle["y"] + new_height / 2),
+            int(self.class_)
         ]
 
         if not inplace:
@@ -231,7 +232,8 @@ class BoundingBox:
             int(self.dict_middle["x"] - (self.dict_dimensions["width"] / 2 *  x_min)),
             int(self.dict_middle["y"] - (self.dict_dimensions["height"] / 2 * y_min)),
             int(self.dict_middle["x"] + (self.dict_dimensions["width"] / 2 *  x_max)),
-            int(self.dict_middle["y"] + (self.dict_dimensions["height"] / 2 * y_max))
+            int(self.dict_middle["y"] + (self.dict_dimensions["height"] / 2 * y_max)),
+            int(self.class_)
         ]
         if not inplace:
             return BoundingBox(new_bounding_box)
