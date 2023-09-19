@@ -99,6 +99,14 @@ class BoundingBox:
         """
 
         return self._len
+    
+    def __str__(self) -> str:
+        return f""""
+        {self.bounding_box}
+        {self.middle}
+        {self.dimensions}
+        {self.walls}
+        """
 
     def iou(self, bounding_box_2: Dict[str, int]) -> float:
         """
