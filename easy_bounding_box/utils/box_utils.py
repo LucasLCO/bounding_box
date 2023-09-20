@@ -153,3 +153,4 @@ def do_segments_intersect(
 
 def separate_classes(dict_boxes):
     classes = {cls for cls in set(dict_boxes[::].dict_bouding_box["class"])}
+    

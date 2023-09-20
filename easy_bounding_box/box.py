@@ -227,7 +227,6 @@ class BoundingBox:
         x_max = percentages[2] * 2 - 1
         y_max = percentages[3] * 2 - 1
 
-
         new_bounding_box = [
             int(self.dict_middle["x"] - (self.dict_dimensions["width"] / 2 *  x_min)),
             int(self.dict_middle["y"] - (self.dict_dimensions["height"] / 2 * y_min)),
